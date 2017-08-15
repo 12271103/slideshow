@@ -11,17 +11,26 @@ import UIKit
 class SecoundViewController: UIViewController {
   
   @IBOutlet weak var imageView: UIImageView!
+  
+  
+  var image = UIImage(named: "1.jpg")
+  var pictureNumber = 2
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    image = UIImage(named:"\(pictureNumber).jpg")
+    imageView.image = image
+    print(pictureNumber)
+    
+    // Do any additional setup after loading the view.
+  }
 
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+  override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    // Dispose of any resources that can be recreated.
+    
+    
+  }
   
   //セグエ後：向こうから表示する画像の情報をもらって反映させる
   

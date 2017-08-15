@@ -75,10 +75,15 @@
                         <outlet property="pictureNumberLabel" destination="PxE-OG-xgr" id="6pU-Ty-mU6"/>
                         <outlet property="slideshowButtonLabel" destination="TFe-XP-XTd" id="9Zv-Bo-EVG"/>
                         <outlet property="timerLabel" destination="7p4-jS-oeg" id="yX9-vu-lPJ"/>
+                        <segue destination="XZQ-Vu-eGL" kind="show" identifier="segue" id="izz-Rc-Jt5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="BLY-ho-heK"/>
+                <tapGestureRecognizer id="BLY-ho-heK">
+                    <connections>
+                        <action selector="onTapImage:" destination="BYZ-38-t0r" id="uB8-z1-V87"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="109.59999999999999" y="38.23088455772114"/>
         </scene>
@@ -102,6 +107,9 @@
                                 <rect key="frame" x="164" y="629" width="46" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
+                                <connections>
+                                    <segue destination="icH-oZ-Pvn" kind="unwind" unwindAction="unwind:" id="4FE-Ug-Kxh"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -111,6 +119,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UCk-g0-rdS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="icH-oZ-Pvn" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="938.39999999999998" y="140.77961019490255"/>
         </scene>

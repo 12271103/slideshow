@@ -7,7 +7,6 @@
 //
 
 import UIKit
-//import Photos
 
 class ViewController: UIViewController {
   
@@ -19,12 +18,17 @@ class ViewController: UIViewController {
   @IBOutlet weak var pictureNumberLabel: UILabel!
   
   //画像データを全て数字にしたので、これを仲介して表示させてみよう。
-  var pictureNumber = 0
+  var pictureNumber = 1
   
-  //タイマーに使う
-  var count = 0
+  //タイマーに使うカウント
+  var count = 1
   
+  //とりあえず宣言した
   var image = UIImage(named: "1.jpg")
+  
+  //タイマー？
+  //timerというのはクラスらしい。これをアンラップしてるっていうのはどういうことだろう…？
+  var timer : Timer!
 
   
   
@@ -34,10 +38,8 @@ class ViewController: UIViewController {
     // Do any additional setup after loading the view, typically from a nib.
     
     //フォルダ内の画像を取得…配列を使えば楽にできるかもしれない。
-    //import photo を記入した。ダメだったら消して。
-    //途中で止まってますよ
-    //let photo = PHAsset.fetchAssets(withALAssetURLs: <#T##[URL]#>, options: nil)
     
+    //とりあえずで書いたコードなので後で修正してくれ
     var image = UIImage(named: "1.jpg")
     imageView.image = image
   }
@@ -47,51 +49,76 @@ class ViewController: UIViewController {
     // Dispose of any resources that can be recreated.
   }
   
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    let secoundViewController:SecoundViewController = segue.destination as! SecoundViewController
+    //SecoundView...と大文字で始めてしまうと、変数ではなくクラスの指定になってしまうのでエラーが出るよ
+    secoundViewController.pictureNumber = self.pictureNumber
+  }
+  
   @IBAction func nextButton(_ sender: Any) {
-    //タイマー有効時に無効
-    
-    //次の画像を表示
-    pictureNumber += 1
-    if pictureNumber == 10{
-      pictureNumber = 1
+    //タイマーが無効の時有効
+    if timer == nil{
+      pictureNumber += 1
+      if pictureNumber == 10{
+        pictureNumber = 1
+      }
+      
+      //デバック用プリント
+      print(pictureNumber)
+      
+      //次の画像を表示
+      changePictureNumberLabel(picturenumber: pictureNumber)
     }
-    
-    //デバック用プリント
-    print(pictureNumber)
-    
-    changePictureNumberLabel(picturenumber: pictureNumber)
-
   }
   
   @IBAction func prevButton(_ sender: Any) {
-    //タイマー有効時に無効
-    //前の画像を表示
-    pictureNumber -= 1
-    if pictureNumber == 0{
-      pictureNumber = 9
+    //タイマー無効の時有効
+    if timer == nil{
+      pictureNumber -= 1
+      if pictureNumber == 0{
+        pictureNumber = 9
+      }
+      
+      //デバック用プリント
+      print(pictureNumber)
+      
+      //前の画像を表示
+      changePictureNumberLabel(picturenumber: pictureNumber)
     }
-
-    //デバック用プリント
-    print(pictureNumber)
-    
-    //picturenumberこうしん
-    changePictureNumberLabel(picturenumber: pictureNumber)
   }
   
   @IBAction func slideshowButton(_ sender: Any) {
     //ボタンのテキストを変更
-    if slideshowButtonLabel.currentTitle == "再生"{
-      self.slideshowButtonLabel.setTitle("停止", for:UIControlState.normal)
+    //これだと、画面遷移の後に表示が変になりそうだ
+//    if slideshowButtonLabel.currentTitle == "再生"{
+//      self.slideshowButtonLabel.setTitle("停止", for:UIControlState.normal)
+//    }else{
+//      self.slideshowButtonLabel.setTitle("再生", for:UIControlState.normal)
+//    }
+    self.slideshowButtonLabel.setTitle("停止", for:UIControlState.normal)
+
+    
+    //カウントアップ開始、ループ タイマーが動いていない時にだけ動くようにする
+    //タイマー始動！しか動かないんですけど…timer がnilになっていない？？いや、nilになりっぱなしなんだ、きっと…
+    //解決した！self.timer = の形にしてなかったのだ
+    if self.timer == nil{
+      self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+      print("タイマー始動！")
+      print("\(self.timer)")
     }else{
-      self.slideshowButtonLabel.setTitle("再生", for:UIControlState.normal)
+//      self.timer.invalidate()
+//      self.timer = nil
+//      print("停止したよ")
+//      print("\(self.timer)")
+      stopTimer()
+
     }
-    //カウントアップ開始、ループ
-    Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
-    
-    
-    
     //カウントに応じた画像を表示
+    
+    //停止処理…この辺りはテキストの変更と連動させれないかね？？
+    
   }
+  
   
   //タイマー更新メソッド
   func updateTimer(timer :Timer){
@@ -104,13 +131,20 @@ class ViewController: UIViewController {
       if pictureNumber == 10{
         pictureNumber = 1
       }
+      
+      //デバッグ用・画像変更
+      changePictureNumberLabel(picturenumber: pictureNumber)
     }
+    
+    //デバッグ用
+    timerLabel.text = "\(count)"
+
   }
   
   //ピクチャーナンバーをラベルに反映　デバッグ用
+  //ついでに画像も変更させてみた。後で完全にそれ用のメソッドとして書き換えよう
   func changePictureNumberLabel(picturenumber a:Int){
     pictureNumberLabel.text = "\(a)"
-    print("大丈夫やで")
     self.image = UIImage(named:"\(a).jpg")
     imageView.image = self.image
     
@@ -118,6 +152,32 @@ class ViewController: UIViewController {
   
   
   //セグエ時の処理：遷移先のviewcontrollerに現在表示中の画像の情報を渡して表示できるようにする
+  @IBAction func onTapImage(_ sender: Any) {
+    
+    //セグエ
+    //タイプミスなんとかしろ〜〜〜sefueってなんぞ
+    stopTimer()
+    performSegue(withIdentifier: "segue", sender: nil)
+    print("遷移しまーす")
+  }
+  
+  //遷移先から戻って来るためのプログラム。なんでこっちに書くんだろう
+  @IBAction func unwind(_ segue: UIStoryboardSegue){
+    
+  }
+  
+  //タイマー停止メソッドを作ろう
+  //これで画面遷移しても再生と停止の表示がおかしくなることはないぞ！
+  func stopTimer(){
+    if self.timer != nil{
+      self.timer.invalidate()
+      self.timer = nil
+      print("停止したよ")
+      print("\(self.timer)")
+      self.slideshowButtonLabel.setTitle("再生", for:UIControlState.normal)
+    }
+  }
+  
   
   
   }
